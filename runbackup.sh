@@ -8,14 +8,13 @@ SCRIPT_DIR=$(dirname $(readlink -f "$BASH_SOURCE"))
 # SCRIPT_DIR=$(/usr/bin/dirname $(/usr/bin/readlink -f "$BASH_SOURCE"))
 # more info: https://stackoverflow.com/questions/59895/how-can-i-get-the-directory-where-a-bash-script-is-located-from-within-the-scrip
 
-if [ -d $SCRIPT_DIR/logs ]; then
-    LOG_DIR="$SCRIPT_DIR/logs"
-    echo "$START_TIME - Set logs dir: $SCRIPT_DIR/logs" # echos not sent to log file useful for troubleshooting cron jobs
+LOG_DIR="$SCRIPT_DIR/logs"
+if [ -d $LOG_DIR ]; then
+    echo "$START_TIME - Set logs dir: $LOG_DIR" # echos not sent to log file useful for troubleshooting cron jobs
 else 
-    mkdir -p $SCRIPT_DIR/logs
-    LOG_DIR="logs"
-    echo "$START_TIME - Set logs dir: $SCRIPT_DIR/logs"
-    echo "$START_TIME - Created logs dir: $SCRIPT_DIR/logs" >> $LOG_DIR/backup.log;
+    mkdir -p $LOG_DIR
+    echo "$START_TIME - Set logs dir: $LOG_DIR"
+    echo "$START_TIME - Created logs dir: $LOG_DIR" >> $LOG_DIR/backup.log;
 fi
 
 run_sync() {
