@@ -31,7 +31,7 @@ sudo apt update<br>
 sudo apt install nfs-common<br>
 sudo mkdir /var/public  # Create mount point<br>
 sudo nano /etc/fstab<br>
-# <file system>     <dir>       <type>   <options>   <dump>	<pass><br>
+<file system>     <dir>       <type>   <options>   <dump>	<pass><br>
 10.10.0.10:/backups /var/backups  nfs      defaults    0       0<br>
 sudo mount -av # run fstab<br>
 
