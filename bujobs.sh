@@ -17,9 +17,7 @@ BU_SOURCE=""
 # backup bounce between the two backup drives each day.
 # This  provides some protection against a drive failure and one day of
 # rollback data without losing half the space if using a mirrored RAID.
-
 DAY_OF_YEAR=$(date +"%-j")
-
 if (( $DAY_OF_YEAR % 2 )); then
     # echo $DAY_OF_YEAR is odd
     BU_TARGET="HomeDirPing"
@@ -28,3 +26,19 @@ else
     BU_TARGET="HomeDirPong"
 fi
 run_sync # always run with current config vars
+
+# Below is an example of a weekly sync backup.
+# This  provides up to a week of aged data to look back at.
+DAY_OF_WEEK=$(date +%a)
+if [[ "$DAY_OF_WEEK" == "Mon" ]]; then  # Sun, Mon, Tue, Wed, Thu, Fri, Sat
+    BU_TARGET="HomeDirWeekly"
+    run_sync # run with current config vars
+fi
+
+# Below is an example of a monthly sync backup.
+# This  provides up to a month of aged data to look back at.
+DAY_OF_MONTH=$(date +%d)
+if [[ "$DAY_OF_MONTH" == "15" ]]; then
+    BU_TARGET="HomeDirMonthly"
+    run_sync # run with current config vars
+fi
