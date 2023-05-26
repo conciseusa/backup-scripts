@@ -42,3 +42,11 @@ if [[ "$DAY_OF_MONTH" == "15" ]]; then
     BU_TARGET="HomeDirMonthly"
     run_sync # run with current config vars
 fi
+
+# Below is an example of a weekly tar backup.
+# This  provides up to a week of aged data to look back at.
+DAY_OF_WEEK=$(date +%a)
+if [[ "$DAY_OF_WEEK" == "Mon" ]]; then  # Sun, Mon, Tue, Wed, Thu, Fri, Sat
+    BU_TARGET="HomeDirWeekly"
+    run_tar # run with current config vars
+fi
