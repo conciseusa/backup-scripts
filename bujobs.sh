@@ -44,9 +44,11 @@ if [[ "$DAY_OF_MONTH" == "15" ]]; then
 fi
 
 # Below is an example of a weekly tar backup.
-# This  provides up to a week of aged data to look back at.
+# This  provides aged data to look back at, and is easy to copy to other locations.
 DAY_OF_WEEK=$(date +%a)
-if [[ "$DAY_OF_WEEK" == "Mon" ]]; then  # Sun, Mon, Tue, Wed, Thu, Fri, Sat
+DAY_TO_RUN="Thu"  # Sun, Mon, Tue, Wed, Thu, Fri, Sat
+if [[ "$DAY_OF_WEEK" == "$DAY_TO_RUN" || 1 ]]; then
     BU_TARGET="HomeDirWeekly"
+    TAR_OPTIONS="--exclude=*.git* --exclude=*.cache* --exclude=*Nobackup*"
     run_tar # run with current config vars
 fi
