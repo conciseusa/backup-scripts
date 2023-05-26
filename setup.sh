@@ -17,7 +17,9 @@ echo "Copy default bujobs.sh to ../config/bujobs.sh"
 cp bujobs.sh ../config/bujobs.sh
 chmod 775 ../config/bujobs.sh
 
-# echo crontab line to run nightly
 PARENT_DIR=$(dirname "$(pwd)")
+echo "Configure jobs in $PARENT_DIR/config/bujobs.sh"
+
+# echo crontab line to run nightly
 echo "Add line below to crontab (crontab -e) to run everyday at 1AM"
-echo "0 1 * * * $PARENT_DIR/config/runbackup.sh"
+echo "0 1 * * * $(pwd)/runbackup.sh"

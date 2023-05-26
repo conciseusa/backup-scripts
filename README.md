@@ -10,7 +10,7 @@ Not too much here, as this is mostly a wrapper around common commands like rsync
 setup.sh creates a config dir in the parent dir and copies in the bujobs.sh file that can be modified to run the needed jobs. It has some sample jobs that write to the tmp dir.<br>
 
 Much of the work can be setting up the source and/or destination targets. Below is a cheatsheet of commands used to set up targets. It may, or may not, be helpful depending on the goal.<br>
-Two common scenarios cleaning up a hard drive with data on it and setting it up to hold backup data,<br>
+Common scenarios are cleaning up a hard drive with data on it and formatting it to hold backup data,<br>
 and connecting to a NAS to backup data on the NAS, or storing backup data on the NAS.<br>
 
 Add drive and reformat:<br>
