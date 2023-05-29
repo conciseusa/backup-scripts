@@ -47,7 +47,7 @@ fi
 # This  provides aged data to look back at, and is easy to copy to other locations.
 DAY_OF_WEEK=$(date +%a)
 DAY_TO_RUN="Thu"  # Sun, Mon, Tue, Wed, Thu, Fri, Sat
-if [[ "$DAY_OF_WEEK" == "$DAY_TO_RUN" || 1 ]]; then
+if [[ "$DAY_OF_WEEK" == "$DAY_TO_RUN"]]; then  # add || 1  to always run for testing
     BU_TARGET="HomeDirWeekly"
     TAR_OPTIONS="--exclude=*.git* --exclude=*.cache* --exclude=*Nobackup* --exclude=*Trash/files*"
     run_tar # run with current config vars
