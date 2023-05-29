@@ -57,3 +57,11 @@ file system     dir       type   options   dump	pass<br>
 sudo mount -av # run fstab<br>
 
 du -h --max-depth=3  # Review size of data<br>
+
+If the backup server is placed in an out of the way location,<br>
+it can be helpful to have remote access to the GUI.<br>
+Different solutions seem to work, then stop working over the years(VNC, NoMachine, etc.).<br>
+RDP seems to be working well as of 2023 on Mint Linux<br>
+sudo apt install xrdp xorgxrdp -y<br>
+echo env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS cinnamon-session>~/.xsession<br>
+Thanks for the setup guide: https://www.rootisgod.com/2020/Using-RDP-With-Linux-Mint-20-Cinnamon/<br>
