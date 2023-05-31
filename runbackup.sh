@@ -17,6 +17,15 @@ else
     echo "$START_TIME - Created logs dir: $LOG_DIR" >> $LOG_DIR/backup.log;
 fi
 
+# rerun protection
+if [ -f $LOG_DIR/runbackup-running.txt ]; then
+    echo "$START_TIME - runbackup-running.txt found, exiting" >> $LOG_DIR/backup.log;
+    exit 1
+else
+    echo "$START_TIME - runbackup-running.txt not found, creating semaphore runbackup-running.txt" >> $LOG_DIR/backup.log;
+    touch $LOG_DIR/runbackup-running.txt;
+fi
+
 run_sync() {
 	echo "$START_TIME - Start a sync backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET"
 	echo "$START_TIME - Start a sync backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" >> $LOG_DIR/backup.log;
@@ -49,3 +58,6 @@ else
     echo "Run local/default bujobs.sh"
     source $SCRIPT_DIR/bujobs.sh
 fi
+
+echo "$START_TIME - Remove semaphore: $LOG_DIR/runbackup-running.txt" >> $LOG_DIR/backup.log;
+rm -f $LOG_DIR/runbackup-running.txt;

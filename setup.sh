@@ -23,3 +23,4 @@ echo "Configure jobs in $PARENT_DIR/config/bujobs.sh"
 # echo crontab line to run nightly
 echo "Add line below to crontab (crontab -e) to run everyday at 1AM"
 echo "0 1 * * * $(pwd)/runbackup.sh"
+echo "@reboot rm -f $(pwd)/logs/runbackup-running.txt" # clear semaphore at reboot
