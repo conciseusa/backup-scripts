@@ -19,16 +19,17 @@ fi
 
 # rerun protection
 if [ -f $LOG_DIR/runbackup-running.txt ]; then
+    echo "$START_TIME - runbackup-running.txt found, exiting"
     echo "$START_TIME - runbackup-running.txt found, exiting" >> $LOG_DIR/backup.log;
     exit 1
 else
-    echo "$START_TIME - runbackup-running.txt not found, creating semaphore runbackup-running.txt" >> $LOG_DIR/backup.log;
+    echo -e "\n$START_TIME - runbackup-running.txt not found, creating semaphore runbackup-running.txt" >> $LOG_DIR/backup.log;
     touch $LOG_DIR/runbackup-running.txt;
 fi
 
 run_sync() {
 	echo "$START_TIME - Start a sync backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET"
-	echo "$START_TIME - Start a sync backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" >> $LOG_DIR/backup.log;
+	echo -e "\n$START_TIME - Start a sync backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" >> $LOG_DIR/backup.log;
 	rsync --verbose  --progress --stats --recursive --times --links --delete --exclude ".DS_Store" --exclude "*~" --exclude ".AppleDouble" "$BU_SOURCE_BASE/$BU_SOURCE" "$BU_TARGET_BASE/$BU_TARGET"
     # --exclude "Podcasts" --exclude "Automatically Add to iTunes" --exclude "Downloads" --dry-run --perms
     END_TIME=`date +%Y-%m-%d-%H-%M-%S`
@@ -38,7 +39,7 @@ run_sync() {
 run_tar() {
 	START_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`  # tar time has day of week at end to help with delete logic
 	echo "$START_TIME - Start a tar backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET"
-	echo "$START_TIME - Start a tar backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" >> $LOG_DIR/backup.log;
+	echo -e "\n$START_TIME - Start a tar backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" >> $LOG_DIR/backup.log;
     tar $TAR_OPTIONS -vczf "$BU_TARGET_BASE/$BU_TARGET-$START_TIME.tgz" "$BU_SOURCE_BASE/$BU_SOURCE"
     # find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz";
     # command to delete old backups

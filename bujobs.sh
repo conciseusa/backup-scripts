@@ -25,20 +25,21 @@ else
     # echo $DAY_OF_YEAR is even
     BU_TARGET="HomeDirPong"
 fi
-run_sync # always run with current config vars
+run_sync # always run with current config vars / add size reduction protection?
 
 # Below is an example of a weekly sync backup.
 # This  provides up to a week of aged data to look back at.
 DAY_OF_WEEK=$(date +%a)
-if [[ "$DAY_OF_WEEK" == "Mon" ]]; then  # Sun, Mon, Tue, Wed, Thu, Fri, Sat
+DAY_TO_RUN="Sun"  # Sun, Mon, Tue, Wed, Thu, Fri, Sat, Disable
+if [[ "$DAY_OF_WEEK" == "$DAY_TO_RUN" ]]; then
     BU_TARGET="HomeDirWeekly"
-    run_sync # run with current config vars
+    run_sync # run with current config vars / add size reduction protection?
 fi
 
 # Below is an example of a monthly sync backup.
-# This  provides up to a month of aged data to look back at.
+# This  provides up to a month? of aged data to look back at.
 DAY_OF_MONTH=$(date +%d)
-if [[ "$DAY_OF_MONTH" == "15" ]]; then
+if [[ "$DAY_OF_MONTH" == "1" ]]; then
     BU_TARGET="HomeDirMonthly"
     run_sync # run with current config vars
 fi
@@ -46,9 +47,9 @@ fi
 # Below is an example of a weekly tar backup.
 # This  provides aged data to look back at, and is easy to copy to other locations.
 DAY_OF_WEEK=$(date +%a)
-DAY_TO_RUN="Thu"  # Sun, Mon, Tue, Wed, Thu, Fri, Sat
-# add || 1  to always run for testing
-if [[ "$DAY_OF_WEEK" == "$DAY_TO_RUN"]]; then
+DAY_TO_RUN="Thu"  # Sun, Mon, Tue, Wed, Thu, Fri, Sat, Disable
+# add || 1  to always run for testing, careful with spaces (unexpected token error)
+if [[ "$DAY_OF_WEEK" == "$DAY_TO_RUN" ]]; then
     BU_TARGET="HomeDirWeekly"
     TAR_OPTIONS="--exclude=*.git* --exclude=*.cache* --exclude=*Nobackup* --exclude=*Trash/files*"
     run_tar # run with current config vars
