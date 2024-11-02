@@ -31,6 +31,7 @@ EXCLUDE_OPTIONS=( --exclude='*.git*' --exclude='*.cache*' --exclude='*Nobackup*'
 # rollback data without losing half the space if using a mirrored RAID.
 DAY_OF_YEAR=$(date +"%-j")
 (( DAY_OF_CYCLE = $DAY_OF_YEAR % 2 ))
+# simple if logic
 #if (( $DAY_OF_YEAR % 2 )); then
 #    # echo $DAY_OF_YEAR is odd
 #    BU_TARGET="HomeDirPing"
@@ -38,18 +39,17 @@ DAY_OF_YEAR=$(date +"%-j")
 #    # echo $DAY_OF_YEAR is even
 #    BU_TARGET="HomeDirPong"
 #fi
-echo $DAY_OF_YEAR $DAY_OF_CYCLE
 case $DAY_OF_CYCLE in
 
   0)
     echo "DAY_OF_YEAR: $DAY_OF_YEAR DAY_OF_YEAR % 2 = 0"
     EXCESSIVE_SIZE_REDUCTION_ABORT=80
-    BU_TARGET="HomeDirPing"
+    BU_TARGET="HomeDirPong"
     ;;
 
   1)
     echo "DAY_OF_YEAR: $DAY_OF_YEAR DAY_OF_YEAR % 2 = 1"
-    BU_TARGET="HomeDirPong"
+    BU_TARGET="HomeDirPing"
     ;;
 
   #2)
