@@ -7,6 +7,8 @@ Sad I need to write my own scripts for something so common as making backups, bu
 
 Not too much here, as this is mostly a wrapper around common commands like rsync and tar, and some simple job control and logging code. But I am posting to make it easy to deploy to my systems, and for my friends that use it in their small businesses.<br>
 
+Some features the script provides: a semaphore that prevents the script from starting up if a previous job has not completed, an optional size reduction check that aborts sync jobs to prevent a deleted source from wiping out the backups, logic to prevent deleting the last rolling tar backup.<br>
+
 setup.sh creates a config dir in the parent dir and copies in the bujobs.sh file that can be modified to run the needed jobs. It has some sample jobs that write to the tmp dir.<br>
 
 Much of the work can be setting up the source and/or destination targets. Below is a cheatsheet of commands used to set up targets. It may, or may not, be helpful depending on the goal.<br>
@@ -50,11 +52,19 @@ https://linuxize.com/post/how-to-mount-an-nfs-share-in-linux/<br>
 Installing NFS client on Ubuntu and Debian:<br>
 sudo apt update<br>
 sudo apt install nfs-common<br>
-sudo mkdir /var/backups  # Create mount point<br>
+sudo mkdir /var/backup-scripts  # Create mount point<br>
 sudo nano /etc/fstab<br>
 file system     dir       type   options   dump	pass<br>
-10.10.0.10:/nasdata /var/backups  nfs      defaults    0       0<br>
+10.10.0.10:/nasdata /var/backup-scripts  nfs      defaults    0       0<br>
 sudo mount -av # run fstab<br>
+
+Use /var/backup-scripts created above for local backups:<br>
+cd /var/backup-scripts<br>
+sudo mkdir local<br>
+sudo chown -R $USER:$USER local<br>
+sudo chmod -R 770 local<br>
+Now should be able to use /var/backup-scripts/local<br>
+for backups without being root.<br>
 
 du -h --max-depth=3  # Review size of data<br>
 
