@@ -1,6 +1,6 @@
 #!/bin/bash
 
-START_TIME=`date +%Y-%m-%d-%H-%M-%S`  # may be used in filenames, careful with the characters
+START_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`  # may be used in filenames, careful with the characters
 SCRIPT_DIR=$(dirname $(readlink -f "$BASH_SOURCE"))
 
 # BASH_SOURCE set by Bash
@@ -21,7 +21,7 @@ fi
 # Rerun protection, if the last run has not finished, do not start another run of backups
 # If the script does not finish due to error or ctrl-C abort, runbackup-running.txt needs to be deleted
 if [ -f $LOG_DIR/runbackup-running.txt ]; then
-    echo "$START_TIME - runbackup-running.txt found, exiting" | tee -a $LOG_DIR/backup.log;
+    echo "$START_TIME - $LOG_DIR/runbackup-running.txt found, exiting. Delete runbackup-running.txt to clear lock." | tee -a $LOG_DIR/backup.log;
     exit 1
 else
     echo -e "\n$START_TIME - runbackup-running.txt not found, creating semaphore runbackup-running.txt" | tee -a $LOG_DIR/backup.log;
@@ -42,7 +42,7 @@ run_sync() {
 	# Used to protect the target in the case much or all of the source is lost.
 	# EXCESSIVE_SIZE_REDUCTION_ABORT=80 requires source size to be at least 80% of target.
 	TARGET_SIZE_ALLOWED_REDUCTION=`expr $TARGET_SIZE \* $EXCESSIVE_SIZE_REDUCTION_ABORT / 100`
-	CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S`
+	CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`
 	echo "$CURRENT_TIME - SOURCE_SIZE: $SOURCE_SIZE / TARGET_SIZE: $TARGET_SIZE / TARGET_SIZE_ALLOWED_REDUCTION: $TARGET_SIZE_ALLOWED_REDUCTION" | tee -a $LOG_DIR/backup.log;
 	if [ $EXCESSIVE_SIZE_REDUCTION_ABORT -eq 0 ] || [ $SOURCE_SIZE -gt $TARGET_SIZE_ALLOWED_REDUCTION ]; then
 	    echo "$CURRENT_TIME - Run sync / EXCLUDE_OPTIONS: ${EXCLUDE_OPTIONS[@]}" | tee -a $LOG_DIR/backup.log;
@@ -53,17 +53,17 @@ run_sync() {
         # df /tmp --output=avail  source,fstype,size,used,avail,pcent
         SOURCE_SIZE=$(du -s -l "${EXCLUDE_OPTIONS[@]}" "$BU_SOURCE_BASE/$BU_SOURCE" | cut -f1)
 	    TARGET_SIZE=$(du -s -l "${EXCLUDE_OPTIONS[@]}" "$BU_TARGET_BASE/$BU_TARGET" | cut -f1)
-	    CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S`
+	    CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`
 	    echo "$CURRENT_TIME - SOURCE_SIZE: $SOURCE_SIZE / TARGET_SIZE: $TARGET_SIZE" | tee -a $LOG_DIR/backup.log;
 	else
 	    echo "$CURRENT_TIME - Abort due to excessive size reduction sync backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" | tee -a $LOG_DIR/backup.log;
 	fi
-    CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S`
+    CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`
     echo "$CURRENT_TIME - End a sync backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" | tee -a $LOG_DIR/backup.log;
 }
 
 run_tar() {
-	START_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`  # tar time has day of week at end to help with delete logic
+	START_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`  # day of week at end to help with delete logic
 	echo "$START_TIME - Start tar backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" | tee -a $LOG_DIR/backup.log;
 	# Do not delete the last tar backup file. Do delete first ot open up space for new file.
 	TAR_FILE_COUNT=$(find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz"  | wc -l)
@@ -75,7 +75,7 @@ run_tar() {
 	fi
     tar "${EXCLUDE_OPTIONS[@]}" -vczf "$BU_TARGET_BASE/$BU_TARGET-$START_TIME.tgz" "$BU_SOURCE_BASE/$BU_SOURCE"
     # find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz";
-    CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S`
+    CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`
     echo "$CURRENT_TIME - End a tar backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" | tee -a $LOG_DIR/backup.log;
 }
 
@@ -91,6 +91,6 @@ else
     source $SCRIPT_DIR/bujobs.sh
 fi
 
-CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S`
+CURRENT_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`
 echo "$CURRENT_TIME - Remove semaphore: $LOG_DIR/runbackup-running.txt" | tee -a $LOG_DIR/backup.log;
 rm -f $LOG_DIR/runbackup-running.txt;
