@@ -7,9 +7,12 @@
 # and the items are seperated so the device does not need to be repeated.
 # The default below backs up the home dir to the tmp dir. Not super useful,
 # but should run out of the box on most Linux systems as an example.
+# Do not put / at the end of paths. Do not put the backups in the home dir
+# if you are backing up the home dir, it will create an endless loop.
 
 BU_SOURCE_BASE=$HOME
 BU_TARGET_BASE="/tmp"
+# BU_TARGET_BASE="/var/backup-scripts/local"
 
 BU_SOURCE=""
 
@@ -44,12 +47,12 @@ case $DAY_OF_CYCLE in
   0)
     echo "DAY_OF_YEAR: $DAY_OF_YEAR DAY_OF_YEAR % 2 = 0"
     EXCESSIVE_SIZE_REDUCTION_ABORT=80
-    BU_TARGET="HomeDirPong"
+    BU_TARGET="HomeDirPing"
     ;;
 
   1)
     echo "DAY_OF_YEAR: $DAY_OF_YEAR DAY_OF_YEAR % 2 = 1"
-    BU_TARGET="HomeDirPing"
+    BU_TARGET="HomeDirPong"
     ;;
 
   #2)
@@ -64,11 +67,13 @@ case $DAY_OF_CYCLE in
 esac
 run_sync # always run with current config vars / add size reduction protection?
 
-# Below is an example of a weekly sync backup.
-# This  provides up to a week of aged data to look back at.
+# DAY_OF_WEEK used for weekly cycle backups.
 DAY_OF_WEEK=$(date +%a)
-DAY_TO_RUN="Fri"  # Sun, Mon, Tue, Wed, Thu, Fri, Sat, Disable
-if [ "$DAY_OF_WEEK" == "$DAY_TO_RUN" ]; then
+
+# Below is an example of a weekly cycle sync backup.
+# This  provides up to a week of aged data to look back at.
+DAY_TO_RUN="Tue Thu Sat"  # Sun Mon Tue Wed Thu Fri Sat Disable
+if [[ "$DAY_TO_RUN" == *"$DAY_OF_WEEK"* ]]; then
     BU_TARGET="HomeDirWeekly"
     run_sync # run with current config vars / add size reduction protection?
 fi
@@ -81,12 +86,12 @@ if [ "$DAY_OF_MONTH" == "1" ]; then
     run_sync # run with current config vars
 fi
 
-# Below is an example of a weekly tar backup.
+# Below is an example of a weekly cycle tar backup.
 # This  provides aged data to look back at, and is easy to copy to other locations.
-DAY_OF_WEEK=$(date +%a)
-DAY_TO_RUN="Thu"  # Sun, Mon, Tue, Wed, Thu, Fri, Sat, Disable, $DAY_OF_WEEK to always run for testing
+# Unlike sync backups, does not need a target dir created, will make a file for each backup.
+DAY_TO_RUN="Thu Sun"  # Sun Mon Tue Wed Thu Fri Sat Disable $DAY_OF_WEEK to always run for testing
 # careful with spaces in if (unexpected token error)
-if [ "$DAY_OF_WEEK" == "$DAY_TO_RUN" ]; then
+if [[ "$DAY_TO_RUN" == *"$DAY_OF_WEEK"* ]]; then
     BU_TARGET="HomeDirWeekly"
     run_tar # run with current config vars
 fi
