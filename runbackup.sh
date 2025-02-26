@@ -65,11 +65,11 @@ run_sync() {
 run_tar() {
 	START_TIME=`date +%Y-%m-%d-%H-%M-%S-%a`  # day of week at end to help with delete logic
 	echo "$START_TIME - Start tar backup of $BU_SOURCE_BASE/$BU_SOURCE to $BU_TARGET_BASE/$BU_TARGET" | tee -a $LOG_DIR/backup.log;
-	# Do not delete the last tar backup file. Do delete first ot open up space for new file.
+	# Do not delete the last tar backup file. Do delete first to open up space for new file.
 	TAR_FILE_COUNT=$(find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz"  | wc -l)
 	if [ $TAR_FILE_COUNT -gt 1 ]; then
-	    echo "$START_TIME - Delete old files, tar file count: $TAR_FILE_COUNT" | tee -a $LOG_DIR/backup.log;
-	    find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz" -mtime +31 -exec rm -f {} \;
+	    echo "$START_TIME - Delete old files, tar file count: $TAR_FILE_COUNT Keep days: $TAR_KEEP_DAYS" | tee -a $LOG_DIR/backup.log;
+	    find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz" -mtime "+$TAR_KEEP_DAYS" -exec rm -f {} \;
 	else
 	    echo "$START_TIME - Abort old file delete due to tar file count of: $TAR_FILE_COUNT" | tee -a $LOG_DIR/backup.log;
 	fi
