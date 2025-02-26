@@ -16,6 +16,11 @@ BU_TARGET_BASE="/tmp"
 
 BU_SOURCE=""
 
+# Delete tar backups older then the number of days set below.
+# If there is only one that matches the backup source and day of week,
+# no tars will be deleted to gaurd against the last backup being deleted.
+TAR_KEEP_DAYS=31
+
 # If the source is less then this percentage of the target, abort sync.
 # Used to protect against the souce being deleted or disconnected and wiping out the backup.
 # But has the downside of if a large amount of data was intentionally deleted, sync will not run.
