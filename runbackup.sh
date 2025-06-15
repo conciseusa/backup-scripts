@@ -68,7 +68,9 @@ run_tar() {
 	# Do not delete the last tar backup file. Do delete first to open up space for new file.
 	TAR_FILE_COUNT=$(find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz"  | wc -l)
 	if [ $TAR_FILE_COUNT -gt 1 ]; then
-	    echo "$START_TIME - Delete old files, tar file count: $TAR_FILE_COUNT Keep days: $TAR_KEEP_DAYS" | tee -a $LOG_DIR/backup.log;
+	    echo "$START_TIME - Delete old files, pre delete tar file count: $TAR_FILE_COUNT Keep days: $TAR_KEEP_DAYS" | tee -a $LOG_DIR/backup.log;
+	    echo "Files to delete:" | tee -a $LOG_DIR/backup.log;
+	    find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz" -mtime "+$TAR_KEEP_DAYS" -print | tee -a $LOG_DIR/backup.log;
 	    find "$BU_TARGET_BASE/" -name "$BU_TARGET-*-$DAY_TO_RUN.tgz" -mtime "+$TAR_KEEP_DAYS" -exec rm -f {} \;
 	else
 	    echo "$START_TIME - Abort old file delete due to tar file count of: $TAR_FILE_COUNT" | tee -a $LOG_DIR/backup.log;
